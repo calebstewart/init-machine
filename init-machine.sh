@@ -106,7 +106,7 @@ if ! [[ -z $HACK_THE_BOX ]]; then
 	# Fetch the HTB API Key
 	APIKEY=`cat $APIKEY_NAME`
 
-	if ! [[ $1 =~ '^[0-9]+$' ]]; then
+	if ! [[ $1 =~ ^[0-9]+$ ]]; then
 		machine=`HTB_API_KEY=$APIKEY hackthebox.py list machines active | grep -E "$1" | head -n1`
 		if [ -z "$machine" ]; then
 			echo "error: $1: no matching machine found" >&2
@@ -135,7 +135,10 @@ if ! [[ -z $HACK_THE_BOX ]]; then
 	fi
 else
 	# Ensure we know enough about the machine
-	if ! [[ $1 =~ '[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}' ]]; then
+	OCTET_REGEX='(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])'
+	IPV4_REGEX="^$OCTET_REGEX\.$OCTET_REGEX\.$OCTET_REGEX\.$OCTET_REGEX$"
+
+	if ! [[ $1 =~ $IPV4_REGEX ]]; then
 		error "$1: expected an ipv4 address"
 	fi
 
